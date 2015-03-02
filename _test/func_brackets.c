@@ -1,0 +1,6 @@
+void good()
+{
+}
+
+void bad() {
+}
