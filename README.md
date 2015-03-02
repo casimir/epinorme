@@ -5,4 +5,4 @@ This checher is meant to be used with Vim plugin [vim-epitech](https://github.co
 
 ## Installation
 
-Providing `$GOPATH/bin` is in your path a simple `go get github.com/casimir/epinorme` will do the trick.
+Providing you have [Golang](https://golang.org/doc/install) and `$GOPATH/bin` in your path a simple `go get github.com/casimir/epinorme` will do the trick.
