@@ -28,4 +28,10 @@ func TestNewFile(t *testing.T) {
 		So(fn1.Lines[f1].n, ShouldEqual, 32)
 		So(fn1.Lines[l1].n, ShouldEqual, 61)
 	})
+
+	Convey("It should handle unkwon file types correctly", t, func() {
+		f, err := NewFile("_test/file.notc")
+		So(err, ShouldNotBeNil)
+		So(f.Type, ShouldEqual, UnkownType)
+	})
 }
