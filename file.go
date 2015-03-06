@@ -112,8 +112,7 @@ func (f Function) innerLines() (first, last int) {
 		}
 	}
 	for i, it := range f.Lines[first:] {
-		line := strings.TrimSpace(it.str)
-		if line == "}" {
+		if strings.HasPrefix(it.str, "}") {
 			last = i + first - 1
 			break
 		}
