@@ -93,6 +93,7 @@ func TestDiagFunction(t *testing.T) {
 		elist := CheckFunction(testCtxt, file.Funcs[1])
 		So(len(elist), ShouldEqual, 1)
 		So(elist[0].Type, ShouldEqual, ErrTooMuchLine)
+		So(elist[0].Line, ShouldEqual, 57)
 	})
 }
 

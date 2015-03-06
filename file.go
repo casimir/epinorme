@@ -68,9 +68,9 @@ func NewFile(path string) (file File, err error) {
 	}
 	defer f.Close()
 	s := bufio.NewScanner(f)
-	for i := 0; s.Scan(); i++ {
+	for i := 1; s.Scan(); i++ {
 		line := s.Text()
-		if i < 10 {
+		if i <= 10 {
 			file.Header = append(file.Header, line)
 		}
 
@@ -103,6 +103,24 @@ type (
 	}
 )
 
+func (f Function) innerLines() (first, last int) {
+	for i, it := range f.Lines {
+		line := strings.TrimSpace(it.str)
+		if strings.HasSuffix(line, "{") {
+			first = i + 1
+			break
+		}
+	}
+	for i, it := range f.Lines[first:] {
+		line := strings.TrimSpace(it.str)
+		if line == "}" {
+			last = i + first - 1
+			break
+		}
+	}
+	return
+}
+
 func newFunction(s *bufio.Scanner, n *int) (fn Function) {
 	parts := reFunc.FindStringSubmatch(s.Text())
 	fn = Function{
@@ -125,6 +143,7 @@ func newFunction(s *bufio.Scanner, n *int) (fn Function) {
 			fn.Args = append(fn.Args, arg)
 		}
 	}
+	*n++
 
 	still := true
 	for ; s.Scan() && still; *n++ {

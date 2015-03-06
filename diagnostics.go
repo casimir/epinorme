@@ -58,8 +58,8 @@ func CheckFunction(ctxt ErrorContext, fn Function) []Error {
 	for _, it := range fn.Args {
 		ret = append(ret, CheckIdentifier(ctxt, it.Name)...)
 	}
-	if len(fn.Lines) > 25+3 {
-		ctxt.Line = fn.Lines[29].n
+	if first, last := fn.innerLines(); last-first > 25 {
+		ctxt.Line = fn.Lines[first+25].n
 		ret = append(ret, ctxt.NewError(ErrTooMuchLine))
 	}
 	for _, it := range fn.Lines {
