@@ -50,7 +50,7 @@ type (
 
 func NewFile(path string) (file File, err error) {
 	file = File{
-		Name: ipath.Base(path),
+		Name: path,
 		Type: getFileType(ipath.Ext(path)),
 	}
 	if file.Type == UnkownType {

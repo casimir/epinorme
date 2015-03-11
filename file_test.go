@@ -8,10 +8,11 @@ import (
 
 func TestNewFile(t *testing.T) {
 	Convey("It should parse a source file and initialize the struct", t, func() {
-		f, err := NewFile("_test/func_lines.c")
+		fpath := "_test/func_lines.c"
+		f, err := NewFile(fpath)
 		So(err, ShouldBeNil)
 		So(f.Type, ShouldEqual, CSource)
-		So(f.Name, ShouldEqual, "func_lines.c")
+		So(f.Name, ShouldEqual, fpath)
 		So(len(f.Funcs), ShouldEqual, 2)
 
 		fn0 := f.Funcs[0]
