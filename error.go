@@ -7,24 +7,27 @@ type ErrType int
 // TODO handle comments
 const (
 	ErrUnknown = iota
+
 	ErrBracketPlacement
 	ErrCamelCase
 	ErrExtraWS
 	ErrMissingBlankLine // TODO
-	ErrMissingHeader
-	ErrMissingSpace // TODO
-	ErrTooMuchArg
+	ErrMissingSpace     // TODO
 	ErrTooMuchBlankLine // TODO
+	ErrTooMuchInstruc   // TODO
+
+	errBeginSerious
+	ErrMissingHeader
+	ErrTooMuchArg
 	ErrTooMuchColumn
 	ErrTooMuchFunc
-	ErrTooMuchInstruc // TODO
 	ErrTooMuchLine
-	ErrUnkownFileType
 
 	warnBegin
 	WarnBadIndent
 	WarnIdentifier
 	WarnSyscallRetCheck // TODO
+	WarnUnknownFileType
 )
 
 var ErrMessages = map[ErrType]string{
@@ -38,7 +41,7 @@ var ErrMessages = map[ErrType]string{
 	ErrTooMuchColumn:    "More than 80 columns",
 	ErrTooMuchFunc:      "More than 5 functions",
 	ErrTooMuchLine:      "More than 25 lines",
-	ErrUnkownFileType:   "Unknown file type",
+	WarnUnknownFileType: "Unknown file type",
 
 	WarnBadIndent:  "Possibly wrong indentation",
 	WarnIdentifier: "Poorly named identifier",

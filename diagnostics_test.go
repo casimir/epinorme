@@ -138,7 +138,7 @@ func TestDiagFile(t *testing.T) {
 		elist := CheckFile(testCtxt, file)
 
 		So(len(elist), ShouldEqual, 1)
-		So(elist[0].Type, ShouldEqual, ErrUnkownFileType)
+		So(elist[0].Type, ShouldEqual, WarnUnknownFileType)
 	})
 }
 

@@ -86,7 +86,7 @@ func CheckHeader(ctxt ErrorContext, lines []string) []Error {
 
 func CheckFile(ctxt ErrorContext, f File) []Error {
 	if f.Type != CSource {
-		return []Error{ctxt.NewError(ErrUnkownFileType)}
+		return []Error{ctxt.NewError(WarnUnknownFileType)}
 	}
 	ret := []Error{}
 	ret = append(ret, CheckIdentifier(ctxt, f.Name)...)
