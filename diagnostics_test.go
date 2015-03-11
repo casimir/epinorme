@@ -132,6 +132,14 @@ func TestDiagFile(t *testing.T) {
 		So(len(elist), ShouldEqual, 1)
 		So(elist[0].Type, ShouldEqual, ErrTooMuchFunc)
 	})
+
+	Convey("It should handle unknown file types", t, func() {
+		file, _ := NewFile("_test/file.notc")
+		elist := CheckFile(testCtxt, file)
+
+		So(len(elist), ShouldEqual, 1)
+		So(elist[0].Type, ShouldEqual, ErrUnkownFileType)
+	})
 }
 
 func l(s string) Line {
