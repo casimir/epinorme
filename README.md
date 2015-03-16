@@ -5,6 +5,6 @@ This checker is meant to be used with Vim plugin [vim-epitech](https://github.co
 
 ## Installation
 
-The easiest way is to download a precompiled binary at https://bintray.com/casimir/generic/epinorme/\_latestVersion.
+The easiest way is to download a precompiled binary [there](https://bintray.com/casimir/generic/epinorme/\_latestVersion).
 
 Providing you have [Golang](https://golang.org/doc/install) and `$GOPATH/bin` in your path a simple `go get github.com/casimir/epinorme` will do the trick.
