@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	ipath "path"
 	"regexp"
@@ -10,7 +11,9 @@ import (
 )
 
 var (
-	reFunc    = regexp.MustCompile(`^(\w+)\s+(\w+)\((.*)\)`)
+	reFuncBeg = regexp.MustCompile(`^\w+\s+\**\w+\(`)
+	reFuncEnd = regexp.MustCompile(`\)`)
+	reFunc    = regexp.MustCompile(`(?ms)^(\w+)\s+(\**)(\w+)\((.*)\)`)
 	reInclude = regexp.MustCompile(`^#\s*include\s+(.*)`)
 )
 
@@ -48,6 +51,22 @@ type (
 	}
 )
 
+func (f File) ListFuncs() []string {
+	var ret []string
+	for _, it := range f.Funcs {
+		ret = append(ret, it.Name)
+	}
+	return ret
+}
+
+func (f File) String() string {
+	parts := []string{
+		f.Name,
+		fmt.Sprintf("→ Functions (%d): %v\n", len(f.Funcs), f.ListFuncs()),
+	}
+	return strings.Join(parts, "\n")
+}
+
 func NewFile(path string) (file File, err error) {
 	file = File{
 		Name: path,
@@ -74,7 +93,7 @@ func NewFile(path string) (file File, err error) {
 			file.Header = append(file.Header, line)
 		}
 
-		if reFunc.MatchString(line) {
+		if reFuncBeg.MatchString(line) {
 			file.Funcs = append(file.Funcs, newFunction(s, &i))
 			continue
 		}
@@ -96,24 +115,23 @@ type (
 	}
 
 	Function struct {
-		RetType string
-		Name    string
-		Args    []Argument
-		Lines   []Line
+		RetType   string
+		Name      string
+		Args      []Argument
+		Lines     []Line
+		protoSize int
 	}
 )
 
 func (f Function) innerLines() (first, last int) {
-	for i, it := range f.Lines {
-		line := strings.TrimSpace(it.str)
-		if strings.HasSuffix(line, "{") {
-			first = i + 1
-			break
-		}
+	first = f.protoSize
+	last = first
+	if strings.HasPrefix(f.Lines[first].str, "{") {
+		last -= 1
 	}
 	for i, it := range f.Lines[first:] {
 		if strings.HasPrefix(it.str, "}") {
-			last = i + first - 1
+			last += i - 1
 			break
 		}
 	}
@@ -121,15 +139,26 @@ func (f Function) innerLines() (first, last int) {
 }
 
 func newFunction(s *bufio.Scanner, n *int) (fn Function) {
-	parts := reFunc.FindStringSubmatch(s.Text())
+	var accu []string
+	for !reFuncEnd.MatchString(s.Text()) {
+		accu = append(accu, s.Text())
+		if !s.Scan() {
+			log.Fatal("Fucked up function")
+		}
+	}
+	accu = append(accu, s.Text())
+	parts := reFunc.FindStringSubmatch(strings.Join(accu, "\n"))
 	fn = Function{
-		RetType: parts[1],
-		Name:    parts[2],
-		Lines:   []Line{{*n, s.Text()}},
+		RetType:   parts[1] + parts[2],
+		Name:      parts[3],
+		protoSize: len(accu),
+	}
+	for _, it := range accu {
+		fn.Lines = append(fn.Lines, Line{*n, it})
+		*n++
 	}
 
-	// FIXME handle multi-line declaration
-	args := parts[3]
+	args := parts[4]
 	if len(args) > 0 {
 		for _, it := range strings.Split(args, ",") {
 			arg := Argument{}
@@ -150,5 +179,6 @@ func newFunction(s *bufio.Scanner, n *int) (fn Function) {
 		fn.Lines = append(fn.Lines, Line{*n, line})
 		still = !strings.HasPrefix(line, "}")
 	}
+	*n--
 	return fn
 }

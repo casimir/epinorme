@@ -11,6 +11,7 @@ import (
 var (
 	aNote    = flag.Bool("note", false, "Use note mode")
 	aProject = flag.Bool("project", false, "Use project mode")
+	aStats   = flag.Bool("stats", false, "Print some file statistics")
 )
 
 func main() {
@@ -33,9 +34,13 @@ func runFileMode() {
 			log.Print(err)
 			continue
 		}
-		ctxt := ErrorContext{File: file.Name}
-		for _, e := range CheckFile(ctxt, file) {
-			fmt.Println(e)
+		if *aStats {
+			fmt.Print(file)
+		} else {
+			ctxt := ErrorContext{File: file.Name}
+			for _, e := range CheckFile(ctxt, file) {
+				fmt.Println(e)
+			}
 		}
 	}
 }

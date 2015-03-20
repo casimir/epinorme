@@ -49,7 +49,7 @@ func CheckFunction(ctxt ErrorContext, fn Function) []Error {
 	ctxt.Line = fn.Lines[0].n
 	ret := []Error{}
 	ret = append(ret, CheckIdentifier(ctxt, fn.Name)...)
-	if fn.Lines[1].str[0] != '{' {
+	if fn.Lines[fn.protoSize].str[0] != '{' {
 		ret = append(ret, ctxt.NewError(ErrBracketPlacement))
 	}
 	if len(fn.Args) > 4 {
@@ -92,6 +92,7 @@ func CheckFile(ctxt ErrorContext, f File) []Error {
 	ret = append(ret, CheckIdentifier(ctxt, f.Name)...)
 	ret = append(ret, CheckHeader(ctxt, f.Header)...)
 	if len(f.Funcs) > 5 {
+		ctxt.Line = f.Funcs[5].Lines[0].n
 		ret = append(ret, ctxt.NewError(ErrTooMuchFunc))
 	}
 	for _, it := range f.Funcs {

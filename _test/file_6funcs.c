@@ -1,18 +1,18 @@
 /*
-** file_6funcs.c for test in /Users/casimir/dev/src/github.com/casimir/epinorme/_test
+** file_6funcs.c for test in /home/chen/dev/src/github.com/casimir/epinorme/_test
 ** 
-** Made by 
-** Login   <casimir@epitech.eu>
+** Made by Prof Chen
+** Login   <chen@epitech.eu>
 ** 
-** Started on  Mon Mar 02 17:24:46 2015 
-** Last update Mon Mar 02 17:29:16 2015 
+** Started on  Fri Mar 20 11:32:00 2015 Prof Chen
+** Last update Fri Mar 20 12:25:18 2015 Prof Chen
 */
 
 void fn_one()
 {
 }
 
-void fn_two()
+void *fn_two()
 {
 }
 

@@ -78,6 +78,7 @@ func TestDiagFunction(t *testing.T) {
 	Convey("It should detect extra arguments", t, func() {
 		file, _ := NewFile("_test/func_args.c")
 
+		So(len(file.Funcs), ShouldEqual, 2)
 		So(CheckFunction(testCtxt, file.Funcs[0]), ShouldBeEmpty)
 
 		elist := CheckFunction(testCtxt, file.Funcs[1])
@@ -131,6 +132,7 @@ func TestDiagFile(t *testing.T) {
 		elist := CheckFile(testCtxt, file)
 		So(len(elist), ShouldEqual, 1)
 		So(elist[0].Type, ShouldEqual, ErrTooMuchFunc)
+		So(elist[0].Line, ShouldEqual, 31)
 	})
 
 	Convey("It should handle unknown file types", t, func() {
