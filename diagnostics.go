@@ -8,6 +8,7 @@ import (
 
 var (
 	reBadID     = regexp.MustCompile(`\d+$`)
+	reBadPonct  = regexp.MustCompile(`\s[,;]|[,;]\S`)
 	reExtraWS   = regexp.MustCompile(`\s+$`)
 	reLeadingWS = regexp.MustCompile(`^(\s*)`)
 )
@@ -27,6 +28,7 @@ func CheckIdentifier(ctxt ErrorContext, id string) []Error {
 }
 
 func CheckLine(ctxt ErrorContext, line Line) []Error {
+	// TODO add column info
 	ctxt.Line = line.n
 	ret := []Error{}
 	if len(line.str) > 80 {
@@ -42,10 +44,15 @@ func CheckLine(ctxt ErrorContext, line Line) []Error {
 		ctxt.Column = len(line.str)
 		ret = append(ret, ctxt.NewError(ErrExtraWS))
 	}
+	if idxs := reBadPonct.FindStringIndex(line.str); len(idxs) > 0 {
+		ctxt.Column = idxs[0] + 1
+		ret = append(ret, ctxt.NewError(ErrPonctPlacement))
+	}
 	return ret
 }
 
 func CheckFunction(ctxt ErrorContext, fn Function) []Error {
+	// XXX context updating doesn't seem right at all
 	ctxt.Line = fn.Lines[0].n
 	ret := []Error{}
 	ret = append(ret, CheckIdentifier(ctxt, fn.Name)...)
@@ -56,7 +63,7 @@ func CheckFunction(ctxt ErrorContext, fn Function) []Error {
 		ctxt.Line = 0
 		arg := fn.Args[4]
 		for _, it := range fn.Lines[:fn.protoSize] {
-			re := regexp.MustCompile(arg.Type + "\\s+\\**" + arg.Name)
+			re := regexp.MustCompile(arg.Type + `\s+\**` + arg.Name)
 			if idxs := re.FindStringIndex(it.str); len(idxs) > 0 {
 				ctxt.Line = it.n
 				ctxt.Column = idxs[0] + 2 // match 1 char before + col [1, ...[

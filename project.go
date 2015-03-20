@@ -36,7 +36,7 @@ func (p Project) String() string {
 		p.Name = "Note"
 	}
 
-	if *aNote {
+	if *aMark {
 		return fmt.Sprintf("%s: %d", p.Name, p.Note())
 	}
 

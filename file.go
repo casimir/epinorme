@@ -125,10 +125,10 @@ type (
 
 func (f Function) innerLines() (first, last int) {
 	first = f.protoSize
-	last = first
 	if strings.HasPrefix(f.Lines[first].str, "{") {
-		last -= 1
+		first += 1
 	}
+	last = first
 	for i, it := range f.Lines[first:] {
 		if strings.HasPrefix(it.str, "}") {
 			last += i - 1
@@ -171,7 +171,6 @@ func newFunction(s *bufio.Scanner, n *int) (fn Function) {
 			fn.Args = append(fn.Args, arg)
 		}
 	}
-	*n++
 
 	still := true
 	for ; s.Scan() && still; *n++ {
@@ -179,6 +178,5 @@ func newFunction(s *bufio.Scanner, n *int) (fn Function) {
 		fn.Lines = append(fn.Lines, Line{*n, line})
 		still = !strings.HasPrefix(line, "}")
 	}
-	*n--
 	return fn
 }

@@ -9,6 +9,7 @@ const (
 	ErrUnknown = iota
 
 	ErrBracketPlacement
+	ErrPonctPlacement
 	ErrCamelCase
 	ErrExtraWS
 	ErrMissingBlankLine // TODO
@@ -33,6 +34,7 @@ const (
 var ErrMessages = map[ErrType]string{
 	ErrUnknown:          "Unknown error",
 	ErrBracketPlacement: "Wrong bracket placement",
+	ErrPonctPlacement:   "Wrong pontuaction placement",
 	ErrCamelCase:        "Bad identifier casing",
 	ErrExtraWS:          "Extra whitespace(s) at EOL",
 	ErrMissingHeader:    "Missing header",

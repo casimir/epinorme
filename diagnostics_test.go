@@ -58,6 +58,23 @@ func TestDiagLine(t *testing.T) {
 		So(listTab[0].Type, ShouldEqual, ErrExtraWS)
 	})
 
+	Convey("It should detect wrong ponctuation placement", t, func() {
+		el1 := CheckLine(testCtxt, l("toto , titi"))
+		So(len(el1), ShouldEqual, 1)
+		So(el1[0].Type, ShouldEqual, ErrPonctPlacement)
+		So(el1[0].Column, ShouldEqual, 5)
+
+		el2 := CheckLine(testCtxt, l("toto,titi"))
+		So(len(el2), ShouldEqual, 1)
+		So(el2[0].Type, ShouldEqual, ErrPonctPlacement)
+		So(el2[0].Column, ShouldEqual, 5)
+
+		el3 := CheckLine(testCtxt, l("toto;titi"))
+		So(len(el3), ShouldEqual, 1)
+		So(el3[0].Type, ShouldEqual, ErrPonctPlacement)
+		So(el3[0].Column, ShouldEqual, 5)
+	})
+
 	Convey("It should detect multiple errors", t, func() {
 		badLine := "   " + strings.Repeat("x", 80) + "	"
 		So(len(CheckLine(testCtxt, l(badLine))), ShouldEqual, 3)
