@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"regexp"
 	"strings"
 	"unicode"
@@ -59,7 +58,6 @@ func CheckFunction(ctxt ErrorContext, fn Function) []Error {
 		for _, it := range fn.Lines[:fn.protoSize] {
 			re := regexp.MustCompile(arg.Type + "\\s+\\**" + arg.Name)
 			if idxs := re.FindStringIndex(it.str); len(idxs) > 0 {
-				log.Print(it)
 				ctxt.Line = it.n
 				ctxt.Column = idxs[0] + 2 // match 1 char before + col [1, ...[
 				break
