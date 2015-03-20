@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"regexp"
 	"strings"
 	"unicode"
@@ -53,7 +54,19 @@ func CheckFunction(ctxt ErrorContext, fn Function) []Error {
 		ret = append(ret, ctxt.NewError(ErrBracketPlacement))
 	}
 	if len(fn.Args) > 4 {
+		ctxt.Line = 0
+		arg := fn.Args[4]
+		for _, it := range fn.Lines[:fn.protoSize] {
+			re := regexp.MustCompile(arg.Type + "\\s+\\**" + arg.Name)
+			if idxs := re.FindStringIndex(it.str); len(idxs) > 0 {
+				log.Print(it)
+				ctxt.Line = it.n
+				ctxt.Column = idxs[0] + 2 // match 1 char before + col [1, ...[
+				break
+			}
+		}
 		ret = append(ret, ctxt.NewError(ErrTooMuchArg))
+		ctxt.Column = 0
 	}
 	for _, it := range fn.Args {
 		ret = append(ret, CheckIdentifier(ctxt, it.Name)...)
