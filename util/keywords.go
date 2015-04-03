@@ -3,12 +3,9 @@ package util
 var (
 	CKeywords = []string{
 		"auto",
-		"break",
-		"case",
 		"char",
 		"const",
 		"continue",
-		"default",
 		"do",
 		"double",
 		"else",
@@ -25,7 +22,6 @@ var (
 		"sizeof",
 		"static",
 		"struct",
-		"switch",
 		"typedef",
 		"union",
 		"unsigned",
@@ -34,8 +30,12 @@ var (
 		"while",
 	}
 	CKeywordsForbidden = []string{
+		"break",
+		"case",
+		"default",
 		"for",
 		"goto",
+		"switch",
 	}
 
 	COperators = []string{
