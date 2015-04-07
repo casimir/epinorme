@@ -11,10 +11,11 @@ import (
 )
 
 var (
-	reFuncBeg = regexp.MustCompile(`^\w+\s+\**\w+\(`)
-	reFuncEnd = regexp.MustCompile(`\)`)
-	reFunc    = regexp.MustCompile(`(?ms)^(\w+)\s+(\**)(\w+)\((.*)\)`)
-	reInclude = regexp.MustCompile(`^#\s*include\s+(.*)`)
+	reFuncBeg   = regexp.MustCompile(`^\w+\s+\**\w+\(`)
+	reFuncEnd   = regexp.MustCompile(`\)`)
+	reFunc      = regexp.MustCompile(`(?ms)^(\w+)\s+(\**)(\w+)\((.*)\)`)
+	reFuncProto = regexp.MustCompile(`(?ms)^(\w+)\s+(\**)(\w+)\((.*)\);`)
+	reInclude   = regexp.MustCompile(`^#\s*include\s+(.*)`)
 )
 
 type FileType int
@@ -46,6 +47,7 @@ type (
 		Type     FileType
 		Header   []string
 		Includes []Line
+		Protos   []Line
 		Funcs    []Function
 		Fillers  []Line
 	}
@@ -93,6 +95,10 @@ func NewFile(path string) (file File, err error) {
 			file.Header = append(file.Header, line)
 		}
 
+		if reFuncProto.MatchString(line) {
+			file.Protos = append(file.Protos, Line{i, line})
+			continue
+		}
 		if reFuncBeg.MatchString(line) {
 			file.Funcs = append(file.Funcs, newFunction(s, &i))
 			continue

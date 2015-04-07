@@ -161,6 +161,14 @@ func TestDiagFile(t *testing.T) {
 		So(len(elist), ShouldEqual, 1)
 		So(elist[0].Type, ShouldEqual, WarnUnknownFileType)
 	})
+
+	Convey("It should report header instruction in source files", t, func() {
+		file, _ := NewFile("_test/proto.c")
+		elist := CheckFile(testCtxt, file)
+
+		So(len(elist), ShouldEqual, 1)
+		So(elist[0].Type, ShouldEqual, ErrHeaderInSource)
+	})
 }
 
 func l(s string) Line {

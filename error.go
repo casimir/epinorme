@@ -9,11 +9,12 @@ const (
 	ErrUnknown = iota
 
 	ErrBracketPlacement
-	ErrPonctPlacement
 	ErrCamelCase
 	ErrExtraWS
+	ErrHeaderInSource
 	ErrMissingBlankLine // TODO
 	ErrMissingSpace     // TODO
+	ErrPonctPlacement
 	ErrTooMuchBlankLine // TODO
 	ErrTooMuchInstruc   // TODO
 
@@ -34,11 +35,12 @@ const (
 var ErrMessages = map[ErrType]string{
 	ErrUnknown:          "Unknown error",
 	ErrBracketPlacement: "Wrong bracket placement",
-	ErrPonctPlacement:   "Wrong pontuaction placement",
 	ErrCamelCase:        "Bad identifier casing",
 	ErrExtraWS:          "Extra whitespace(s) at EOL",
+	ErrHeaderInSource:   "Instruction should be in headerinstead",
 	ErrMissingHeader:    "Missing header",
 	ErrMissingSpace:     "Missing space after keyword",
+	ErrPonctPlacement:   "Wrong pontuaction placement",
 	ErrTooMuchArg:       "More than 4 arguments",
 	ErrTooMuchColumn:    "More than 80 columns",
 	ErrTooMuchFunc:      "More than 5 functions",

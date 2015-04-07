@@ -109,6 +109,10 @@ func CheckFile(ctxt ErrorContext, f File) []Error {
 	ret := []Error{}
 	ret = append(ret, CheckIdentifier(ctxt, f.Name)...)
 	ret = append(ret, CheckHeader(ctxt, f.Header)...)
+	for _, it := range f.Protos {
+		ctxt.Line = it.n
+		ret = append(ret, ctxt.NewError(ErrHeaderInSource))
+	}
 	if len(f.Funcs) > 5 {
 		ctxt.Line = f.Funcs[5].Lines[0].n
 		ret = append(ret, ctxt.NewError(ErrTooMuchFunc))
