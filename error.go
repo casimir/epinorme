@@ -37,7 +37,7 @@ var ErrMessages = map[ErrType]string{
 	ErrBracketPlacement: "Wrong bracket placement",
 	ErrCamelCase:        "Bad identifier casing",
 	ErrExtraWS:          "Extra whitespace(s) at EOL",
-	ErrHeaderInSource:   "Instruction should be in headerinstead",
+	ErrHeaderInSource:   "Instruction should be in header instead",
 	ErrMissingHeader:    "Missing header",
 	ErrMissingSpace:     "Missing space after keyword",
 	ErrPonctPlacement:   "Wrong pontuaction placement",
