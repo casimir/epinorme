@@ -1,0 +1,11 @@
+0.2.0
+- Report wrong placement of ',' and ';'
+- Report extraneous function arguments
+- Report prototypes in source file
+- Better matching of functions
+- Fix filter flags
+
+0.1.0
+- Basic cases
+- Project mode
+- Marks mode
