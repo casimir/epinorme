@@ -59,15 +59,23 @@ type Error struct {
 	What   string
 }
 
+func (e Error) Error() string {
+	return e.String()
+}
+
+func (e Error) ShouldPrint() bool {
+	if e.Type > warnBegin {
+		return !*aNoWarn
+	} else {
+		return !*aNoErr
+	}
+}
+
 func (e Error) String() string {
 	if e.Type > warnBegin {
 		return fmt.Sprintf("%s:%d: warning: %s", e.File, e.Line, e.What)
 	}
 	return fmt.Sprintf("%s:%d:%d:%s", e.File, e.Line, e.Column, e.What)
-}
-
-func (e Error) Error() string {
-	return e.String()
 }
 
 type ErrorContext struct {

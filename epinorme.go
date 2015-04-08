@@ -9,11 +9,11 @@ import (
 )
 
 var (
-	aErr     = flag.Bool("e", true, "Show errors")
 	aMark    = flag.Bool("mark", false, "Use mark mode")
+	aNoErr   = flag.Bool("noerr", false, "Hide errors")
+	aNoWarn  = flag.Bool("nowarn", false, "Hide warnings")
 	aProject = flag.Bool("project", false, "Use project mode")
 	aStats   = flag.Bool("stats", false, "Print some file statistics")
-	aWarn    = flag.Bool("w", true, "Show warnings")
 )
 
 func main() {
@@ -41,9 +41,7 @@ func runFileMode() {
 		} else {
 			ctxt := ErrorContext{File: file.Name}
 			for _, e := range CheckFile(ctxt, file) {
-				if e.Type > warnBegin && *aWarn {
-					fmt.Println(e)
-				} else if e.Type < warnBegin && *aErr {
+				if e.ShouldPrint() {
 					fmt.Println(e)
 				}
 			}

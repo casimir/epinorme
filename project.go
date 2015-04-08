@@ -42,7 +42,9 @@ func (p Project) String() string {
 
 	var strs []string
 	for _, it := range p.Errors {
-		strs = append(strs, it.String())
+		if it.ShouldPrint() {
+			strs = append(strs, it.String())
+		}
 	}
 	return strings.Join(strs, "\n")
 }

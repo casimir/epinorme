@@ -6,6 +6,31 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+func TestShouldPrint(t *testing.T) {
+	Convey("It should determine correctly when to print", t, func() {
+		*aNoErr = false
+		*aNoWarn = false
+		Convey("When printing errors and warnings", func() {
+			So(Error{Type: ErrBracketPlacement}.ShouldPrint(), ShouldBeTrue)
+			So(Error{Type: WarnBadIndent}.ShouldPrint(), ShouldBeTrue)
+		})
+
+		*aNoErr = false
+		*aNoWarn = true
+		Convey("When printing errors only", func() {
+			So(Error{Type: ErrBracketPlacement}.ShouldPrint(), ShouldBeTrue)
+			So(Error{Type: WarnBadIndent}.ShouldPrint(), ShouldBeFalse)
+		})
+
+		*aNoErr = true
+		*aNoWarn = false
+		Convey("When printing warnings only", func() {
+			So(Error{Type: ErrBracketPlacement}.ShouldPrint(), ShouldBeFalse)
+			So(Error{Type: WarnBadIndent}.ShouldPrint(), ShouldBeTrue)
+		})
+	})
+}
+
 func TestErrorContext(t *testing.T) {
 	testCtxt := ErrorContext{
 		File:   "file.c",
