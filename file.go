@@ -132,7 +132,7 @@ type (
 func (f Function) innerLines() (first, last int) {
 	first = f.protoSize
 	if strings.HasPrefix(f.Lines[first].str, "{") {
-		first += 1
+		first++
 	}
 	last = first
 	for i, it := range f.Lines[first:] {

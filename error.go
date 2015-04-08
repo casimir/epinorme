@@ -66,9 +66,8 @@ func (e Error) Error() string {
 func (e Error) ShouldPrint() bool {
 	if e.Type > warnBegin {
 		return !*aNoWarn
-	} else {
-		return !*aNoErr
 	}
+	return !*aNoErr
 }
 
 func (e Error) String() string {

@@ -21,7 +21,7 @@ func (p Project) Note() int {
 	counted := map[ErrType]bool{}
 	for _, it := range p.Errors {
 		if it.Type > ErrUnknown && it.Type < errBeginSerious && !counted[it.Type] {
-			ret -= 1
+			ret--
 			counted[it.Type] = true
 		} else if it.Type > errBeginSerious && it.Type < warnBegin && !counted[it.Type] {
 			ret -= 5
