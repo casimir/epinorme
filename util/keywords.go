@@ -1,36 +1,36 @@
 package util
 
+import (
+	"fmt"
+	"regexp"
+)
+
 var (
 	CKeywords = []string{
 		"auto",
-		"char",
 		"const",
-		"continue",
 		"do",
 		"double",
 		"else",
 		"enum",
 		"extern",
-		"float",
 		"if",
-		"int",
-		"long",
 		"register",
 		"return",
-		"short",
 		"signed",
-		"sizeof",
 		"static",
 		"struct",
 		"typedef",
 		"union",
 		"unsigned",
-		"void",
 		"volatile",
 		"while",
 	}
+	ReCKeywords []*regexp.Regexp
+
 	CKeywordsForbidden = []string{
 		"break",
+		"continue",
 		"case",
 		"default",
 		"for",
@@ -47,3 +47,10 @@ var (
 		"?", ":",
 	}
 )
+
+func init() {
+	for _, it := range CKeywords {
+		re := fmt.Sprintf(`(%s)\S`, it)
+		ReCKeywords = append(ReCKeywords, regexp.MustCompile(re))
+	}
+}

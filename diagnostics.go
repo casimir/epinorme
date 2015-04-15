@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+
+	"github.com/casimir/epinorme/util"
 )
 
 var (
@@ -43,6 +45,12 @@ func CheckLine(ctxt ErrorContext, line Line) []Error {
 	if reExtraWS.MatchString(line.str) {
 		ctxt.Column = len(line.str)
 		ret = append(ret, ctxt.NewError(ErrExtraWS))
+	}
+	for _, it := range util.ReCKeywords {
+		if loc := it.FindStringIndex(line.str); loc != nil {
+			ctxt.Column = loc[0]
+			ret = append(ret, ctxt.NewError(ErrMissingSpace))
+		}
 	}
 	if idxs := reBadPonct.FindStringIndex(line.str); len(idxs) > 0 {
 		ctxt.Column = idxs[0] + 1

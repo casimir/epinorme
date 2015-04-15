@@ -58,6 +58,29 @@ func TestDiagLine(t *testing.T) {
 		So(listTab[0].Type, ShouldEqual, ErrExtraWS)
 	})
 
+	Convey("It should detect withespace after keywords", t, func() {
+		good := []string{
+			"do",
+			"return EXIT_FAILURE;",
+			"while (42)",
+		}
+		bad := []string{
+			"return(1);",
+			"while(42)",
+			"else if(-42)",
+		}
+
+		for _, it := range good {
+			el := CheckLine(testCtxt, l(it))
+			So(el, ShouldBeEmpty)
+		}
+		for _, it := range bad {
+			el := CheckLine(testCtxt, l(it))
+			So(len(el), ShouldEqual, 1)
+			So(el[0].Type, ShouldEqual, ErrMissingSpace)
+		}
+	})
+
 	Convey("It should detect wrong ponctuation placement", t, func() {
 		el1 := CheckLine(testCtxt, l("toto , titi"))
 		So(len(el1), ShouldEqual, 1)
