@@ -94,7 +94,7 @@ func CheckHeader(ctxt ErrorContext, lines []string) []Error {
 		return noHeaderErr
 	}
 	for i := 1; i < 8; i++ {
-		if !strings.HasPrefix(lines[i], "** ") {
+		if !strings.HasPrefix(lines[i], "**") {
 			return noHeaderErr
 		}
 	}
