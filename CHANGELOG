@@ -1,3 +1,7 @@
+0.3.0
+- Check space after keywords
+- Doesn't report header with trailing space as invalid
+
 0.2.0
 - Report wrong placement of ',' and ';'
 - Report extraneous function arguments
