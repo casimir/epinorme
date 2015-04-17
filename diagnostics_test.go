@@ -60,6 +60,7 @@ func TestDiagLine(t *testing.T) {
 
 	Convey("It should detect withespace after keywords", t, func() {
 		good := []string{
+			"do_something()",
 			"do",
 			"return EXIT_FAILURE;",
 			"while (42)",
