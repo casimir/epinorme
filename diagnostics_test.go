@@ -62,6 +62,7 @@ func TestDiagLine(t *testing.T) {
 		good := []string{
 			"do_something()",
 			"do",
+			"undo()",
 			"return EXIT_FAILURE;",
 			"while (42)",
 		}

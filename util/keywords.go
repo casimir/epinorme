@@ -50,7 +50,7 @@ var (
 
 func init() {
 	for _, it := range CKeywords {
-		re := fmt.Sprintf(`(%s)\b\S`, it)
+		re := fmt.Sprintf(`\b(%s)\b\S`, it)
 		ReCKeywords = append(ReCKeywords, regexp.MustCompile(re))
 	}
 }
