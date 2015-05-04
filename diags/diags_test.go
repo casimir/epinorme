@@ -1,6 +1,7 @@
 package diags
 
 import (
+	"log"
 	"strings"
 	"testing"
 
@@ -30,54 +31,60 @@ func TestDiagIdentifier(t *testing.T) {
 
 func TestDiagLine(t *testing.T) {
 	Convey("It should detect lines too long", t, func() {
-		So(CheckLine(testCtxt, l("Some line")), ShouldBeEmpty)
+		So(CheckLine(testCtxt, l("Some line"), false), ShouldBeEmpty)
 
-		list := CheckLine(testCtxt, l(strings.Repeat("x", 81)))
+		list := CheckLine(testCtxt, l(strings.Repeat("x", 81)), false)
 		So(len(list), ShouldEqual, 1)
 		So(list[0].Type, ShouldEqual, ErrTooMuchColumn)
 	})
 
 	Convey("It should detect wrong indentation", t, func() {
-		So(CheckLine(testCtxt, l("Some line")), ShouldBeEmpty)
-		So(CheckLine(testCtxt, l("  Some line")), ShouldBeEmpty)
-		So(CheckLine(testCtxt, l("    Some line")), ShouldBeEmpty)
+		So(CheckLine(testCtxt, l("Some line"), false), ShouldBeEmpty)
+		So(CheckLine(testCtxt, l("  Some line"), false), ShouldBeEmpty)
+		So(CheckLine(testCtxt, l("    Some line"), false), ShouldBeEmpty)
 
-		list := CheckLine(testCtxt, l("   heading spaces"))
+		list := CheckLine(testCtxt, l("   heading spaces"), false)
 		So(len(list), ShouldEqual, 1)
 		So(list[0].Type, ShouldEqual, WarnBadIndent)
 	})
 
 	Convey("It should detect EOL withespaces", t, func() {
-		So(CheckLine(testCtxt, l("Some line")), ShouldBeEmpty)
+		So(CheckLine(testCtxt, l("Some line"), false), ShouldBeEmpty)
 
-		listSpace := CheckLine(testCtxt, l("extra spaces   "))
+		listSpace := CheckLine(testCtxt, l("extra spaces   "), false)
 		So(len(listSpace), ShouldEqual, 1)
 		So(listSpace[0].Type, ShouldEqual, ErrExtraWS)
-		listTab := CheckLine(testCtxt, l("extra tabs		"))
+		listTab := CheckLine(testCtxt, l("extra tabs		"), false)
 		So(len(listTab), ShouldEqual, 1)
 		So(listTab[0].Type, ShouldEqual, ErrExtraWS)
 	})
 
-	Convey("It should detect whitespace after keywords", t, func() {
+	Convey("It should detect missing whitespaces (for keywords and operators)", t, func() {
 		good := []string{
 			"do_something()",
 			"do",
 			"undo()",
 			"return EXIT_FAILURE;",
 			"while (42)",
+			"a + b",
+			"f(\"+ab\")",
+			"if (test == 1)",
 		}
 		bad := []string{
 			"return(1);",
 			"while(42)",
 			"else if(-42)",
+			"a* b",
+			"if (test==1)",
 		}
 
 		for _, it := range good {
-			el := CheckLine(testCtxt, l(it))
+			el := CheckLine(testCtxt, l(it), true)
+			log.Print(it)
 			So(el, ShouldBeEmpty)
 		}
 		for _, it := range bad {
-			el := CheckLine(testCtxt, l(it))
+			el := CheckLine(testCtxt, l(it), true)
 			So(len(el), ShouldEqual, 1)
 			So(el[0].Type, ShouldEqual, ErrMissingSpace)
 		}
@@ -91,19 +98,19 @@ func TestDiagLine(t *testing.T) {
 		}
 
 		for _, it := range lines {
-			el := CheckLine(testCtxt, l(it))
+			el := CheckLine(testCtxt, l(it), false)
 			So(len(el), ShouldEqual, 1)
 			So(el[0].Type, ShouldEqual, ErrPonctPlacement)
 			So(el[0].Column, ShouldEqual, 5)
 		}
 
-		el4 := CheckLine(testCtxt, l("printf(\";\");"))
+		el4 := CheckLine(testCtxt, l("printf(\";\");"), false)
 		So(el4, ShouldBeEmpty)
 	})
 
 	Convey("It should detect multiple errors", t, func() {
 		badLine := "   " + strings.Repeat("x", 80) + "	"
-		So(len(CheckLine(testCtxt, l(badLine))), ShouldEqual, 3)
+		So(len(CheckLine(testCtxt, l(badLine), false)), ShouldEqual, 3)
 	})
 }
 

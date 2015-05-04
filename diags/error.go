@@ -39,7 +39,7 @@ var ErrMessages = map[ErrType]string{
 	ErrExtraWS:          "Extra whitespace(s) at EOL",
 	ErrHeaderInSource:   "Instruction should be in header instead",
 	ErrMissingHeader:    "Missing header",
-	ErrMissingSpace:     "Missing space after keyword",
+	ErrMissingSpace:     "Missing space before/after keyword/operator",
 	ErrPonctPlacement:   "Wrong ponctuation placement",
 	ErrTooMuchArg:       "More than 4 arguments",
 	ErrTooMuchColumn:    "More than 80 columns",

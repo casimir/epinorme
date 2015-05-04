@@ -52,12 +52,14 @@ func CheckFunction(ctxt ErrorContext, fn Function) []Error {
 	for _, it := range fn.Args {
 		ret = append(ret, CheckIdentifier(ctxt, it.Name)...)
 	}
-	if first, last := fn.innerLines(); last-first > 25 {
+	first, last := fn.innerLines()
+	if last-first > 25 {
 		ctxt.Line = fn.Lines[first+25].n
 		ret = append(ret, ctxt.NewError(ErrTooMuchLine))
 	}
-	for _, it := range fn.Lines {
-		ret = append(ret, CheckLine(ctxt, it)...)
+	ret = append(ret, CheckLine(ctxt, fn.Lines[0], false)...)
+	for _, it := range fn.Lines[first:] {
+		ret = append(ret, CheckLine(ctxt, it, true)...)
 	}
 	return ret
 }

@@ -1,6 +1,6 @@
 package diags
 
-func CheckLine(ctxt ErrorContext, line Line) []Error {
+func CheckLine(ctxt ErrorContext, line Line, inFn bool) []Error {
 	// TODO add column info
 	ctxt.Line = line.n
 	ret := []Error{}
@@ -19,15 +19,29 @@ func CheckLine(ctxt ErrorContext, line Line) []Error {
 		ctxt.Column = len(line.str)
 		ret = append(ret, ctxt.NewError(ErrExtraWS))
 	}
+	if idxs := reBadPonct.FindStringIndex(line.str); len(idxs) > 0 {
+		ctxt.Column = idxs[0] + 1
+		ret = append(ret, ctxt.NewError(ErrPonctPlacement))
+	}
+	if inFn {
+		ret = append(ret, checkFnLine(ctxt, line)...)
+	}
+	return ret
+}
+
+func checkFnLine(ctxt ErrorContext, line Line) (ret []Error) {
+	// TODO merge loops
 	for _, it := range ReCKeywords {
 		if loc := it.FindStringIndex(line.str); loc != nil {
 			ctxt.Column = loc[0]
 			ret = append(ret, ctxt.NewError(ErrMissingSpace))
 		}
 	}
-	if idxs := reBadPonct.FindStringIndex(line.str); len(idxs) > 0 {
-		ctxt.Column = idxs[0] + 1
-		ret = append(ret, ctxt.NewError(ErrPonctPlacement))
+	for _, it := range ReCOperators {
+		if loc := it.FindStringIndex(line.str); loc != nil {
+			ctxt.Column = loc[0]
+			ret = append(ret, ctxt.NewError(ErrMissingSpace))
+		}
 	}
-	return ret
+	return
 }
