@@ -58,7 +58,7 @@ func TestDiagLine(t *testing.T) {
 		So(listTab[0].Type, ShouldEqual, ErrExtraWS)
 	})
 
-	Convey("It should detect withespace after keywords", t, func() {
+	Convey("It should detect whitespace after keywords", t, func() {
 		good := []string{
 			"do_something()",
 			"do",
@@ -84,20 +84,21 @@ func TestDiagLine(t *testing.T) {
 	})
 
 	Convey("It should detect wrong ponctuation placement", t, func() {
-		el1 := CheckLine(testCtxt, l("toto , titi"))
-		So(len(el1), ShouldEqual, 1)
-		So(el1[0].Type, ShouldEqual, ErrPonctPlacement)
-		So(el1[0].Column, ShouldEqual, 5)
+		lines := []string{
+			"toto , titi",
+			"toto,titi",
+			"toto;titi",
+		}
 
-		el2 := CheckLine(testCtxt, l("toto,titi"))
-		So(len(el2), ShouldEqual, 1)
-		So(el2[0].Type, ShouldEqual, ErrPonctPlacement)
-		So(el2[0].Column, ShouldEqual, 5)
+		for _, it := range lines {
+			el := CheckLine(testCtxt, l(it))
+			So(len(el), ShouldEqual, 1)
+			So(el[0].Type, ShouldEqual, ErrPonctPlacement)
+			So(el[0].Column, ShouldEqual, 5)
+		}
 
-		el3 := CheckLine(testCtxt, l("toto;titi"))
-		So(len(el3), ShouldEqual, 1)
-		So(el3[0].Type, ShouldEqual, ErrPonctPlacement)
-		So(el3[0].Column, ShouldEqual, 5)
+		el4 := CheckLine(testCtxt, l("printf(\";\");"))
+		So(el4, ShouldBeEmpty)
 	})
 
 	Convey("It should detect multiple errors", t, func() {

@@ -9,6 +9,7 @@ import (
 var (
 	reBadID     = regexp.MustCompile(`\d+$`)
 	reBadPonct  = regexp.MustCompile(`\s[,;]|[,;]\S`)
+	reCString   = regexp.MustCompile(`"[^"\\]*(?:\\.[^"\\]*)*"`)
 	reExtraWS   = regexp.MustCompile(`\s+$`)
 	reLeadingWS = regexp.MustCompile(`^(\s*)`)
 )
@@ -40,6 +41,8 @@ func CheckLine(ctxt ErrorContext, line Line) []Error {
 		ctxt.Column = len(lws)
 		ret = append(ret, ctxt.NewError(WarnBadIndent))
 	}
+	// Remove all cstrings to ease further matching.
+	line.str = reCString.ReplaceAllString(line.str, "")
 	if reExtraWS.MatchString(line.str) {
 		ctxt.Column = len(line.str)
 		ret = append(ret, ctxt.NewError(ErrExtraWS))
