@@ -57,7 +57,7 @@ func runProjectMode() {
 		go func() {
 			p := diags.NewProject(proj)
 			if *aMark {
-				fmt.Printf("Note: %d\n", p.Note())
+				fmt.Printf("%s: %d\n", p.Name, p.Note())
 			} else {
 				fmt.Println(p)
 			}
