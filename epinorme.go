@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"sync"
+
+	"github.com/casimir/epinorme/diags"
 )
 
 var (
@@ -13,7 +15,6 @@ var (
 	aNoErr   = flag.Bool("noerr", false, "Hide errors")
 	aNoWarn  = flag.Bool("nowarn", false, "Hide warnings")
 	aProject = flag.Bool("project", false, "Use project mode")
-	aStats   = flag.Bool("stats", false, "Print some file statistics")
 )
 
 func main() {
@@ -22,6 +23,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Usage: %s [flags] FILES...\n", os.Args[0])
 		os.Exit(1)
 	}
+	diags.PrintErr = !*aNoErr
+	diags.PrintWarn = !*aNoWarn
 	if *aProject {
 		runProjectMode()
 	} else {
@@ -31,19 +34,15 @@ func main() {
 
 func runFileMode() {
 	for _, it := range flag.Args() {
-		file, err := NewFile(it)
+		file, err := diags.NewFile(it)
 		if err != nil {
 			log.Print(err)
 			continue
 		}
-		if *aStats {
-			fmt.Print(file)
-		} else {
-			ctxt := ErrorContext{File: file.Name}
-			for _, e := range CheckFile(ctxt, file) {
-				if e.ShouldPrint() {
-					fmt.Println(e)
-				}
+		ctxt := diags.ErrorContext{File: file.Name}
+		for _, e := range diags.CheckFile(ctxt, file) {
+			if e.ShouldPrint() {
+				fmt.Println(e)
 			}
 		}
 	}
@@ -56,7 +55,12 @@ func runProjectMode() {
 	for _, it := range flag.Args() {
 		proj := it
 		go func() {
-			fmt.Println(NewProject(proj))
+			p := diags.NewProject(proj)
+			if *aMark {
+				fmt.Printf("Note: %d\n", p.Note())
+			} else {
+				fmt.Println(p)
+			}
 			wg.Done()
 		}()
 	}

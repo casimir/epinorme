@@ -1,7 +1,6 @@
-package main
+package diags
 
 import (
-	"fmt"
 	"log"
 	"os"
 	ipath "path"
@@ -32,14 +31,6 @@ func (p Project) Note() int {
 }
 
 func (p Project) String() string {
-	if len(p.Name) == 0 {
-		p.Name = "Note"
-	}
-
-	if *aMark {
-		return fmt.Sprintf("%s: %d", p.Name, p.Note())
-	}
-
 	var strs []string
 	for _, it := range p.Errors {
 		if it.ShouldPrint() {
@@ -50,6 +41,7 @@ func (p Project) String() string {
 }
 
 func NewProject(path string) Project {
+	path, _ = filepath.Abs(path)
 	p := Project{
 		Name: ipath.Base(path),
 		Path: path,

@@ -1,4 +1,4 @@
-package main
+package diags
 
 import "fmt"
 
@@ -40,7 +40,7 @@ var ErrMessages = map[ErrType]string{
 	ErrHeaderInSource:   "Instruction should be in header instead",
 	ErrMissingHeader:    "Missing header",
 	ErrMissingSpace:     "Missing space after keyword",
-	ErrPonctPlacement:   "Wrong pontuaction placement",
+	ErrPonctPlacement:   "Wrong ponctuation placement",
 	ErrTooMuchArg:       "More than 4 arguments",
 	ErrTooMuchColumn:    "More than 80 columns",
 	ErrTooMuchFunc:      "More than 5 functions",
@@ -63,11 +63,16 @@ func (e Error) Error() string {
 	return e.String()
 }
 
+var (
+	PrintErr  = true
+	PrintWarn = false
+)
+
 func (e Error) ShouldPrint() bool {
 	if e.Type > warnBegin {
-		return !*aNoWarn
+		return PrintWarn
 	}
-	return !*aNoErr
+	return PrintErr
 }
 
 func (e Error) String() string {
