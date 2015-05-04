@@ -1,5 +1,7 @@
 package diags
 
+import "log"
+
 func CheckLine(ctxt ErrorContext, line Line, inFn bool) []Error {
 	// TODO add column info
 	ctxt.Line = line.n
@@ -40,6 +42,7 @@ func checkFnLine(ctxt ErrorContext, line Line) (ret []Error) {
 	for _, it := range ReCOperators {
 		if loc := it.FindStringIndex(line.str); loc != nil {
 			ctxt.Column = loc[0]
+			log.Printf("%s - %s", it, line.str)
 			ret = append(ret, ctxt.NewError(ErrMissingSpace))
 		}
 	}

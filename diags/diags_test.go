@@ -1,7 +1,6 @@
 package diags
 
 import (
-	"log"
 	"strings"
 	"testing"
 
@@ -69,6 +68,10 @@ func TestDiagLine(t *testing.T) {
 			"a + b",
 			"f(\"+ab\")",
 			"if (test == 1)",
+			"val *= 42)",
+			"val <<= 4)",
+			"true || false",
+			"return (-42);",
 		}
 		bad := []string{
 			"return(1);",
@@ -76,11 +79,14 @@ func TestDiagLine(t *testing.T) {
 			"else if(-42)",
 			"a* b",
 			"if (test==1)",
+			"val*= 42)",
+			"val <<=4)",
+			"false&& true",
+			"12-42",
 		}
 
 		for _, it := range good {
 			el := CheckLine(testCtxt, l(it), true)
-			log.Print(it)
 			So(el, ShouldBeEmpty)
 		}
 		for _, it := range bad {
