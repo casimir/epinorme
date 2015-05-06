@@ -30,18 +30,14 @@ func CheckLine(ctxt ErrorContext, line Line, inFn bool) []Error {
 }
 
 func checkFnLine(ctxt ErrorContext, line Line) (ret []Error) {
-	// TODO merge loops
-	for _, it := range ReCKeywords {
-		if loc := it.FindStringIndex(line.str); loc != nil {
-			ctxt.Column = loc[0]
-			ret = append(ret, ctxt.NewError(ErrMissingSpace))
-		}
+	// FIXME duplicate code
+	if loc := ReCKeywords.FindStringIndex(line.str); loc != nil {
+		ctxt.Column = loc[0]
+		ret = append(ret, ctxt.NewError(ErrMissingSpace))
 	}
-	for _, it := range ReCOperators {
-		if loc := it.FindStringIndex(line.str); loc != nil {
-			ctxt.Column = loc[0]
-			ret = append(ret, ctxt.NewError(ErrMissingSpace))
-		}
+	if loc := ReCOperators.FindStringIndex(line.str); loc != nil {
+		ctxt.Column = loc[0]
+		ret = append(ret, ctxt.NewError(ErrMissingSpace))
 	}
 	return
 }

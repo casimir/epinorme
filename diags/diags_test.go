@@ -91,7 +91,7 @@ func TestDiagLine(t *testing.T) {
 		}
 		for _, it := range bad {
 			el := CheckLine(testCtxt, l(it), true)
-			So(len(el), ShouldBeGreaterThanOrEqualTo, 1)
+			So(len(el), ShouldEqual, 1)
 			So(el[0].Type, ShouldEqual, ErrMissingSpace)
 		}
 	})

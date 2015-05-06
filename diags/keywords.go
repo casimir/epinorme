@@ -5,6 +5,22 @@ import (
 	"regexp"
 )
 
+type ReList []*regexp.Regexp
+
+func (rl ReList) FindStringIndex(s string) []int {
+	for _, re := range rl {
+		if idx := re.FindStringIndex(s); idx != nil {
+			//log.Printf("%s - %q", re, s)
+			return idx
+		}
+	}
+	return nil
+}
+
+func (rl ReList) MatchString(s string) bool {
+	return rl.FindStringIndex(s) != nil
+}
+
 var (
 	CKeywords = []string{
 		"auto",
@@ -26,7 +42,7 @@ var (
 		"volatile",
 		"while",
 	}
-	ReCKeywords []*regexp.Regexp
+	ReCKeywords ReList
 
 	CKeywordsForbidden = []string{
 		"break",
@@ -42,15 +58,14 @@ var (
 		`\+`, `\*`, `/`, `%`, `\^`, `\?`, `:`,
 	}
 	reCMultiOps = []string{
-		`(?:[^t\n\f\r (]-|-[^\t\n\f\r 0-9])`,                                       // -
-		`(?:[^\t\n\f\r =!><+-\\*/&|^]=|=[^\t\n\f\r =])`,                            // =
-		`(?:[^\t\n\f\r ><][=!><+-\\*/&|^]=|[=!><+-\\*/&|^]=\S)`,                    // .=
-		`(?:[^\t\n\f\r |]\||\|[^\t\n\f\r |])`, `(?:[^\t\n\f\r &]&|&[^\t\n\f\r &])`, // |, &
+		`(?:[^t\n\f\r (]-|-[^\t\n\f\r 0-9a-zA-Z=])`,                                  // -
+		`(?:[^\t\n\f\r =!><+-\\*/&|^%]=|=[^\t\n\f\r =])`,                             // =
+		`(?:[^\t\n\f\r ><][=!><+-\\*/&|^%]=)`,                                        // *=
+		`(?:[^\t\n\f\r |]\||\|[^\t\n\f\r |=])`, `(?:[^\t\n\f\r &]&|&[^\t\n\f\r &=])`, // |, &
 		`(?:\S[^& ]&|&[^& ]\S)`, `(?:\S[^| ]\||\|[^| ]\S)`, // &&, ||
-		`(?:\S[^< ]<|<[^< ]\S)`, `(?:\S[^> ]>|>[^> ]\S)`, // <<, >>, <<=, >>=
+		`(?:[^\t\n\f\r <]<|<[^\t\n\f\r <=])`, `(?:[^\t\n\f\r >]>|>[^\t\n\f\r >=])`, // <, <<, >, >>
 	}
-	// TODO generate UT
-	ReCOperators []*regexp.Regexp
+	ReCOperators ReList
 )
 
 func init() {
