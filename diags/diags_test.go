@@ -72,6 +72,8 @@ func TestDiagLine(t *testing.T) {
 			"val <<= 4)",
 			"true || false",
 			"return (-42);",
+			"i++;",
+			"!predicat",
 		}
 		bad := []string{
 			"return(1);",
@@ -83,6 +85,7 @@ func TestDiagLine(t *testing.T) {
 			"val <<=4)",
 			"false&& true",
 			"12-42",
+			"! nope",
 		}
 
 		for _, it := range good {

@@ -10,7 +10,6 @@ type ReList []*regexp.Regexp
 func (rl ReList) FindStringIndex(s string) []int {
 	for _, re := range rl {
 		if idx := re.FindStringIndex(s); idx != nil {
-			//log.Printf("%s - %q", re, s)
 			return idx
 		}
 	}
@@ -55,15 +54,18 @@ var (
 	}
 
 	reCSimpleOps = []string{
-		`\+`, `\*`, `/`, `%`, `\^`, `\?`, `:`,
+		`\*`, `/`, `%`, `\^`, `\?`, `:`,
 	}
 	reCMultiOps = []string{
-		`(?:[^t\n\f\r (]-|-[^\t\n\f\r 0-9a-zA-Z=])`,                                  // -
-		`(?:[^\t\n\f\r =!><+-\\*/&|^%]=|=[^\t\n\f\r =])`,                             // =
-		`(?:[^\t\n\f\r ><][=!><+-\\*/&|^%]=)`,                                        // *=
-		`(?:[^\t\n\f\r |]\||\|[^\t\n\f\r |=])`, `(?:[^\t\n\f\r &]&|&[^\t\n\f\r &=])`, // |, &
+		`(?:\S!|!\s)`,                   // !
+		`(?:\s\+{2}\s)`, `(?:\s-{2}\s)`, // ++, --
+		`(?:[^\s+]\+{1}[^+]|[^+]\+{1}[^\s+=])`,           // +
+		`(?:[^\s-(]-[^-]|-[^\s\da-zA-Z=-])`,              // -
+		`(?:[^\s=!><+-\\*/&|^%]=|=[^\s=])`,               // =
+		`(?:[^\s><][=!><+-\\*/&|^%]=)`,                   // *=
+		`(?:[^\s|]\||\|[^\s|=])`, `(?:[^\s&]&|&[^\s&=])`, // |, &
 		`(?:\S[^& ]&|&[^& ]\S)`, `(?:\S[^| ]\||\|[^| ]\S)`, // &&, ||
-		`(?:[^\t\n\f\r <]<|<[^\t\n\f\r <=])`, `(?:[^\t\n\f\r >]>|>[^\t\n\f\r >=])`, // <, <<, >, >>
+		`(?:[^\s<]<|<[^\s<=])`, `(?:[^\s>]>|>[^\s>=])`, // <, <<, >, >>
 	}
 	ReCOperators ReList
 )
@@ -75,7 +77,7 @@ func init() {
 	}
 
 	for _, it := range reCSimpleOps {
-		re := fmt.Sprintf(`(?:\S%s|%s[^\t\n\f\r =])`, it, it)
+		re := fmt.Sprintf(`(?:\S%s|%s[^\s=])`, it, it)
 		ReCOperators = append(ReCOperators, regexp.MustCompile(re))
 	}
 	for _, it := range reCMultiOps {

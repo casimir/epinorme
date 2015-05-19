@@ -6,12 +6,15 @@ import (
 )
 
 var (
-	operators = []string{
+	operators2 = []string{
 		"=", "+", "*", "/", "%", "&", "|", "^", "?", ":",
 		"==", "!=", "<=", ">=",
 		"+=", "-=", "*=", "/=", "%=", "&=", "|=",
 		"&&", "||", "<<", ">>",
 		"<<=", ">>=",
+	}
+	operatorsIncr = []string{
+		"++", "--",
 	}
 
 	operatorsData = []struct {
@@ -32,8 +35,11 @@ type TOp struct {
 func TestOperators(t *testing.T) {
 	var tt []TOp
 	for _, t := range operatorsData {
-		for _, o := range operators {
+		for _, o := range operators2 {
 			tt = append(tt, TOp{fmt.Sprintf(t.format, o), t.expected})
+		}
+		for _, o := range operatorsIncr {
+			tt = append(tt, TOp{fmt.Sprintf(t.format, o), !t.expected})
 		}
 	}
 
