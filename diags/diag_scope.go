@@ -8,7 +8,6 @@ import (
 var (
 	reBadID     = regexp.MustCompile(`\d+$`)
 	reBadPonct  = regexp.MustCompile(`\s[,;]|[,;]\S`)
-	reCString   = regexp.MustCompile(`"[^"\\]*(?:\\.[^"\\]*)*"`)
 	reExtraWS   = regexp.MustCompile(`\s+$`)
 	reLeadingWS = regexp.MustCompile(`^(\s*)`)
 )

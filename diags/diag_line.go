@@ -1,5 +1,12 @@
 package diags
 
+import "regexp"
+
+var (
+	reCChar   = regexp.MustCompile(`'[^'\\]*(?:\\.[^'\\]*)*'`)
+	reCString = regexp.MustCompile(`"[^"\\]*(?:\\.[^"\\]*)*"`)
+)
+
 func CheckLine(ctxt ErrorContext, line Line, inFn bool) []Error {
 	// TODO add column info
 	ctxt.Line = line.n
@@ -13,8 +20,9 @@ func CheckLine(ctxt ErrorContext, line Line, inFn bool) []Error {
 		ctxt.Column = len(lws)
 		ret = append(ret, ctxt.NewError(WarnBadIndent))
 	}
-	// Remove all cstrings to ease further matching.
-	line.str = reCString.ReplaceAllString(line.str, "")
+	// Empty cstrings to ease further matching.
+	line.str = reCChar.ReplaceAllString(line.str, `''`)
+	line.str = reCString.ReplaceAllString(line.str, `""`)
 	if reExtraWS.MatchString(line.str) {
 		ctxt.Column = len(line.str)
 		ret = append(ret, ctxt.NewError(ErrExtraWS))

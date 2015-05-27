@@ -67,13 +67,16 @@ func TestDiagLine(t *testing.T) {
 		"a + b",
 		"f(\"+ab\")",
 		"if (test == 1)",
-		"val *= 42)",
-		"val <<= 4)",
+		"if (c == '+')",
+		"val <<= 4",
 		"true || false",
 		"return (-42);",
 		"i++;",
 		"!predicat",
+		"if (!predicat)",
 		"a->b",
+		"list->n++;",
+		"list->n--;",
 	}
 	for _, it := range good {
 		el := CheckLine(testCtxt, l(it), true)
@@ -86,9 +89,7 @@ func TestDiagLine(t *testing.T) {
 		"return(1);",
 		"while(42)",
 		"else if(-42)",
-		"a* b",
 		"if (test==1)",
-		"val*= 42)",
 		"val <<=4)",
 		"false&& true",
 		"12-42",
