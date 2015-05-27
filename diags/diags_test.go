@@ -58,46 +58,51 @@ func TestDiagLine(t *testing.T) {
 		So(listTab[0].Type, ShouldEqual, ErrExtraWS)
 	})
 
-	Convey("It should detect missing whitespaces (for keywords and operators)", t, func() {
-		good := []string{
-			"do_something()",
-			"do",
-			"undo()",
-			"return EXIT_FAILURE;",
-			"while (42)",
-			"a + b",
-			"f(\"+ab\")",
-			"if (test == 1)",
-			"val *= 42)",
-			"val <<= 4)",
-			"true || false",
-			"return (-42);",
-			"i++;",
-			"!predicat",
+	good := []string{
+		"do_something()",
+		"do",
+		"undo()",
+		"return EXIT_FAILURE;",
+		"while (42)",
+		"a + b",
+		"f(\"+ab\")",
+		"if (test == 1)",
+		"val *= 42)",
+		"val <<= 4)",
+		"true || false",
+		"return (-42);",
+		"i++;",
+		"!predicat",
+		"a->b",
+	}
+	for _, it := range good {
+		el := CheckLine(testCtxt, l(it), true)
+		if len(el) > 0 {
+			t.Errorf("%q -> %q, want []", it, el)
 		}
-		bad := []string{
-			"return(1);",
-			"while(42)",
-			"else if(-42)",
-			"a* b",
-			"if (test==1)",
-			"val*= 42)",
-			"val <<=4)",
-			"false&& true",
-			"12-42",
-			"! nope",
-		}
+	}
 
-		for _, it := range good {
-			el := CheckLine(testCtxt, l(it), true)
-			So(el, ShouldBeEmpty)
+	missingWS := []string{
+		"return(1);",
+		"while(42)",
+		"else if(-42)",
+		"a* b",
+		"if (test==1)",
+		"val*= 42)",
+		"val <<=4)",
+		"false&& true",
+		"12-42",
+		"! nope",
+	}
+	for _, it := range missingWS {
+		el := CheckLine(testCtxt, l(it), true)
+		if len(el) == 0 {
+			t.Errorf("%q -> 0 error, want at least 1 error", it)
 		}
-		for _, it := range bad {
-			el := CheckLine(testCtxt, l(it), true)
-			So(len(el), ShouldEqual, 1)
-			So(el[0].Type, ShouldEqual, ErrMissingSpace)
+		if el[0].Type != ErrMissingSpace {
+			t.Errorf("%q -> %q, want a 'Missing space' error", it, el[0])
 		}
-	})
+	}
 
 	Convey("It should detect wrong ponctuation placement", t, func() {
 		lines := []string{

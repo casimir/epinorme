@@ -50,7 +50,3 @@ func TestOperators(t *testing.T) {
 		}
 	}
 }
-
-func TestOperatorMinus(t *testing.T) {
-	// TODO implements
-}
